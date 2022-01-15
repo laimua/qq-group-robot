@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="simbot.example.persistence.mapper.KeyWordBanMapper">
+
+    <resultMap type="simbot.example.persistence.domain.KeyWordBan" id="KeyWordBanResult">
+        <id     property="rowId"       column="row_id"      />
+        <result property="keyWord"       column="key_word"      />
+    </resultMap>
+
+    <sql id="selectKeyWordVo">
+        select row_id,key_word
+        from key_word_ban
+    </sql>
+
+    <select id="selectKeyWordList" parameterType="simbot.example.persistence.domain.KeyWordBan" resultMap="KeyWordBanResult">
+        <include refid="selectKeyWordVo"/>
+            <where>
+                <if test="keyWord != null and keyWord != ''">
+                    AND key_word = #{keyWord}
+                </if>
+            </where>
+    </select>
+
+    <insert id="insert" parameterType="simbot.example.persistence.domain.KeyWordBan">
+        INSERT INTO key_word_ban(key_word) VALUES(#{keyWord,jdbcType=VARCHAR})
+    </insert>
+
+
+
+</mapper>

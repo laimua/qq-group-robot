@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:mysql://1.15.187.223:3306/qq-bot?characterEncoding=utf8
+    username: root
+    password: PUKtuhui2021@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+logging:
+  level:
+    love.forte: debug
+
+simbot:
+  component:
+    mirai:
+      message:
+        cache:
+          enable: true
+          priCapacity: 16
+            # 私聊消息缓存初始容量
+          priInitialCapacity: 16
+            # 群消息缓存最大容量
+          groCapacity: 128
+            # 群消息缓存初始容量
+          groInitialCapacity: 128
+            # 私聊缓存负载因子。默认为 0.75。
+          priLoadFactor: 0.75
+            # 群消息缓存负载因子。默认为 0.75。
+          groLoadFactor: 0.75
+  core:
+    bot-resource-type: both

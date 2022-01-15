@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="simbot.example.persistence.mapper.UserMapper">
+
+    <resultMap type="simbot.example.persistence.domain.User" id="UserResult">
+        <id     property="id"       column="id"      />
+        <result property="code"       column="code"      />
+        <result property="nick"       column="nick"      />
+        <result property="createDate"       column="create_date"      />
+        <result property="jurisdiction"       column="jurisdiction"      />
+        <result property="petId"       column="pet_id"      />
+        <result property="level"       column="level"      />
+        <result property="characteristic"       column="characteristic"      />
+        <result property="characteristicId"       column="characteristic_id"      />
+        <result property="totalPoint"       column="total_point"      />
+        <result property="currentPoint"       column="current_point"      />
+        <result property="todayNum"       column="today_num"      />
+    </resultMap>
+
+    <sql id="selectUserVo">
+        select id,nick,code,create_date,jurisdiction,pet_id,level,characteristic,characteristic_id,total_point,current_point
+        from t_user
+    </sql>
+
+    <sql id="selectUserPointVo">
+        select u.id,u.nick,u.code,u.create_date,u.jurisdiction,u.pet_id,u.level,u.characteristic,u.characteristic_id,u.total_point,u.current_point,
+               (
+                   select
+                       count( 1 ) as num
+                   FROM
+                       point_log l
+                   WHERE
+                       l.CODE = u.CODE
+                     AND l.change_type = 'add'
+                     AND l.point_type = 'activity'
+                     AND to_days( l.create_date ) = to_days( now( ) )
+               ) AS today_num
+        from t_user u
+    </sql>
+
+    <select id="selectUserList" parameterType="simbot.example.persistence.domain.User" resultMap="UserResult">
+        <include refid="selectUserPointVo"/>
+        <where>
+            <if test="code != null and code != ''">
+                AND code = #{code}
+            </if>
+            <if test="nick != null and nick != ''">
+                AND nick = #{nick}
+            </if>
+            <if test="createDate != null and createDate != ''">
+                AND create_date = #{createDate}
+            </if>
+            <if test="jurisdiction != null and jurisdiction != ''">
+                AND jurisdiction = #{jurisdiction}
+            </if>
+            <if test="petId != null and petId != ''">
+                AND pet_id = #{petId}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insert" parameterType="simbot.example.persistence.domain.User"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user(
+        <if test="id != null and id != ''">id,</if>
+        <if test="code != null and code != ''">code,</if>
+        <if test="nick != null and nick != ''">nick,</if>
+        <if test="jurisdiction != null and jurisdiction != ''">jurisdiction,</if>
+        <if test="petId != null and petId != ''">pet_id,</if>
+        <if test="level != null and level != ''">level,</if>
+        <if test="characteristic != null and characteristic != ''">characteristic,</if>
+        <if test="characteristicId != null and characteristicId != ''">characteristic_id,</if>
+        <if test="totalPoint != null and totalPoint != ''">total_point,</if>
+        <if test="currentPoint != null and currentPoint != ''">current_point,</if>
+        create_date
+        ) VALUES(
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="code != null and code != ''">#{code},</if>
+        <if test="nick != null and nick != ''">#{nick},</if>
+        <if test="jurisdiction != null and jurisdiction != ''">#{jurisdiction},</if>
+        <if test="petId != null and petId != ''">#{petId},</if>
+        <if test="level != null and level != ''">#{level},</if>
+        <if test="characteristic != null and characteristic != ''">#{characteristic},</if>
+        <if test="characteristicId != null and characteristicId != ''">#{characteristicId},</if>
+        <if test="totalPoint != null and totalPoint != ''">#{totalPoint},</if>
+        <if test="currentPoint != null and currentPoint != ''">#{currentPoint},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="updateUser" parameterType="simbot.example.persistence.domain.User">
+        update t_user
+        <set>
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="nick != null and nick != ''">nick = #{nick},</if>
+            <if test="jurisdiction != null and jurisdiction != ''">jurisdiction = #{jurisdiction},</if>
+            <if test="petId != null and petId != ''">pet_id = #{petId},</if>
+            <if test="level != null and level != ''">level = #{level},</if>
+            <if test="characteristic != null and characteristic != ''">characteristic = #{characteristic},</if>
+            <if test="characteristicId != null and characteristicId != ''">characteristic_id = #{characteristicId},</if>
+            <if test="totalPoint != null and totalPoint != ''">total_point = #{totalPoint},</if>
+            <if test="currentPoint != null and currentPoint != ''">current_point = #{currentPoint},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="selectUserByCode" parameterType="String" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        where code = #{code}
+    </select>
+
+</mapper>

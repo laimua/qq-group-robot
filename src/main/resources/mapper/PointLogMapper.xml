@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="simbot.example.persistence.mapper.PointLogMapper">
+
+    <resultMap type="simbot.example.persistence.domain.PointLog" id="PointLogResult">
+        <id     property="id"       column="id"      />
+        <result property="code"       column="code"      />
+        <result property="changePoint"       column="change_point"      />
+        <result property="pointType"       column="point_type"      />
+        <result property="changeType"       column="change_type"      />
+        <result property="createDate"       column="create_date"      />
+    </resultMap>
+
+    <sql id="selectKeyWordVo">
+        select id,code,change_point,point_type,change_type,create_date
+        from point_log
+    </sql>
+
+    <select id="selectPointLogList" parameterType="simbot.example.persistence.domain.PointLog" resultMap="PointLogResult">
+        <include refid="selectKeyWordVo"/>
+            <where>
+                <if test="code != null and code != ''">
+                    AND code = #{code}
+                </if>
+            </where>
+    </select>
+
+    <insert id="insertPointLog" parameterType="simbot.example.persistence.domain.PointLog"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO point_log(
+        <if test="id != null and id != ''">id,</if>
+        <if test="code != null and code != ''">code,</if>
+        <if test="changePoint != null and changePoint != ''">change_point,</if>
+        <if test="pointType != null and pointType != ''">point_type,</if>
+        <if test="changeType != null and changeType != ''">change_type,</if>
+        create_date
+        ) VALUES(
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="code != null and code != ''">#{code},</if>
+        <if test="changePoint != null and changePoint != ''">#{changePoint},</if>
+        <if test="pointType != null and pointType != ''">#{pointType},</if>
+        <if test="changeType != null and changeType != ''">#{changeType},</if>
+        sysdate()
+        )
+    </insert>
+
+
+
+</mapper>
